@@ -2,7 +2,7 @@
 
 **Status:** first GitHub Pages demo candidate (`0.1.0`). DreamPlayer is a local, privacy-first music-to-visual cue instrument. Tiny Director lets one person trigger images and simple camera-like effects from a configurable 3×3 pad while the soundtrack continues, then replay and save the result.
 
-![DreamPlayer Tiny Director demo](docs/Screenshot%202026-07-21%20155522.png)
+![DreamPlayer Tiny Director demo](screenshot.png)
 
 ## GitHub Pages demo
 
