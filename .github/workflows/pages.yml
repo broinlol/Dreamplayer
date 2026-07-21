@@ -1,4 +1,4 @@
-name: Deploy Tiny Director to GitHub Pages
+name: Deploy DreamPlayer to GitHub Pages
 
 on:
   workflow_dispatch:
