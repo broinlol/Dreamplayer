@@ -1,0 +1,15 @@
+{
+  "name": "dreamcue-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "build:demo": "node scripts/build-demo-project.mjs",
+    "verify": "node --check src/app.js && node --check scripts/serve.js && node --test --test-isolation=none tests/*.test.mjs && node scripts/build-demo-project.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

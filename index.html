@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamPlayer MVP</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">D</span><div><strong>DreamPlayer</strong><small>Demo 0.1 · local · offline</small></div></div>
+    <nav class="mode-switch" aria-label="Mode"><button id="mode-player" class="active">Player</button><button id="mode-director">Tiny Director</button></nav>
+    <div class="project-actions"><button id="new-project">New</button><button id="load-demo">Load demo</button><button id="open-project">Open Dreamcue</button><button id="save-project" class="primary">Save</button><button id="settings-open" class="icon-button" title="Director settings" aria-label="Director settings">⚙</button></div>
+  </header>
+
+  <main>
+    <div id="message" class="message" role="status">Ready. Load the included demo to begin, or open your own Dreamcue project.</div>
+    <section class="layout">
+      <div class="main-column">
+        <section class="preview-card">
+          <div id="stage" class="stage"><img id="preview-image" alt="Current cue image"><div id="stage-empty" class="stage-empty"><strong>No visual at this time</strong><span>Load the demo or add an image cue in Tiny Director.</span></div><div id="cue-label" class="cue-label">No cue</div></div>
+          <div class="transport"><button id="play" class="round" title="Play or pause">▶</button><button id="restart" title="Stop and return to the beginning">↺ Restart</button><span id="current-time" class="time">00:00</span><input id="seek" type="range" min="0" max="0" value="0" step="0.01" aria-label="Playback position"><span id="total-time" class="time">00:00</span><label class="volume">Volume <input id="volume" type="range" min="0" max="1" value="0.85" step="0.01"></label></div>
+        </section>
+
+        <section class="card player-summary" data-mode="player">
+          <div class="section-head"><div><span class="eyebrow">Project</span><h2 id="player-title">Untitled project</h2></div><button id="edit-project">Edit in Tiny Director</button></div>
+          <dl class="facts"><div><dt>Audio</dt><dd id="player-audio">Missing</dd></div><div><dt>Images</dt><dd id="player-images">0</dd></div><div><dt>Image / effect cues</dt><dd id="player-cues">0 / 0</dd></div></dl>
+          <h3>Cue sequence</h3><ol id="player-cue-list" class="simple-cues"></ol>
+        </section>
+
+        <section class="card cue-editor" data-mode="director" hidden>
+          <div class="section-head"><div><span class="eyebrow">Sequence</span><h2>Image cues</h2></div><button id="add-cue">Cue selected image</button></div>
+          <p class="hint">Click a time or thumbnail to seek. Live cues are saved as human decisions and override AI suggestions at the same time.</p>
+          <div id="cue-list" class="cue-list"></div>
+          <div class="section-head subhead"><div><span class="eyebrow">Player transform</span><h2>Effect cues</h2></div></div>
+          <div id="effect-cue-list" class="effect-cue-list"></div>
+        </section>
+
+        <section class="card ai-card" data-mode="director" hidden>
+          <div class="section-head"><div><span class="eyebrow">Local heuristic · no model connected</span><h2>AI Assist</h2></div><div class="small-actions"><button id="ai-accept-all">Accept all</button><button id="ai-reject-all">Reject all</button></div></div>
+          <div class="ai-controls"><label class="field">Mood keywords<input id="ai-mood" placeholder="e.g. calm, night, energetic"></label><button id="ai-generate" class="primary">Generate suggestions</button></div>
+          <p class="hint">Suggestions change nothing until accepted. You can edit every proposed time and image first.</p>
+          <div id="ai-suggestions" class="suggestions"></div>
+        </section>
+      </div>
+
+      <aside class="card director-panel" data-mode="director" hidden>
+        <div class="director-title"><div><span class="eyebrow">Tiny Director</span><h2>Live direction</h2></div><button id="settings-open-inline" class="icon-button" title="Configure hotkeys" aria-label="Configure hotkeys">⚙</button></div>
+        <p class="director-intro">Play the track, then trigger images or effects from the 3×3 pad. The music keeps playing.</p>
+        <label class="field">Project title<input id="project-title" value="Untitled Dreamcue project"></label>
+        <div class="import-buttons"><button id="choose-audio">Choose audio</button><button id="choose-images">Choose images</button></div>
+        <div class="audio-file"><span>Audio</span><strong id="audio-name" title="No audio file">No audio file</strong></div>
+
+        <div class="grid-toolbar"><div class="segmented"><button id="grid-images" class="active">Images</button><button id="grid-effects">Effects</button></div><div class="bank-nav"><button id="bank-previous" title="Previous bank">‹</button><strong id="bank-name">Bank 1</strong><button id="bank-next" title="Next bank">›</button></div></div>
+        <div id="bank-tabs" class="bank-tabs" aria-label="Image banks"></div>
+        <div id="hotkey-grid" class="hotkey-grid" aria-label="Live hotkey pad"></div>
+        <button id="add-bank" class="wide">+ Add bank</button>
+
+        <details class="pool" open><summary>Image pool <span id="image-count">0</span></summary><p class="hint">Removing an image only clears its bank slot. Drag images to reorder them; bank tabs are drop targets.</p><div id="unassigned-list" class="unassigned-list"></div></details>
+        <button id="test-project" class="wide primary">Test in Player</button>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="settings-dialog" class="settings-dialog">
+    <form method="dialog" class="settings-shell">
+      <div class="section-head"><div><span class="eyebrow">Saved in this browser</span><h2>Director settings</h2></div><button value="close" aria-label="Close">×</button></div>
+      <label class="field">Hotkey layout<select id="hotkey-layout"><option value="numpad">Numpad 3×3</option><option value="letters">QWE / ASD / YXC</option></select></label>
+      <fieldset><legend>Pad keys</legend><div id="hotkey-settings-grid" class="hotkey-settings-grid"></div></fieldset>
+      <fieldset><legend>Bank switching</legend><div class="bank-key-settings"><label>Previous bank<button id="bind-bank-previous" type="button" class="key-bind"></button></label><label>Next bank<button id="bind-bank-next" type="button" class="key-bind"></button></label></div></fieldset>
+      <label class="toggle"><input id="visual-feedback" type="checkbox"> Visual feedback for live cues</label>
+      <div class="settings-actions"><button id="reset-settings" type="button">Reset settings</button><button value="close" class="primary">Done</button></div>
+      <p id="binding-help" class="hint">Select a binding, then press the key you want to use.</p>
+    </form>
+  </dialog>
+
+  <footer><span>DreamPlayer · Build Week Demo 0.1</span><span>Your media and settings stay on this device.</span></footer>
+  <audio id="audio" preload="metadata"></audio>
+  <input id="project-input" type="file" accept=".dreamcue,application/json" hidden><input id="audio-input" type="file" accept="audio/*,.mp3,.wav,.ogg,.flac,.m4a" hidden><input id="image-input" type="file" accept="image/*,.png,.jpg,.jpeg,.webp,.gif,.svg" multiple hidden>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
